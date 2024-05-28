@@ -1,0 +1,81 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'fileutils'
+
+require_relative '../crown_marketplace_runner/utils'
+
+module CrownMarketplaceRunner
+  module Bin
+    class Setup
+      class << self
+        include CrownMarketplaceRunner::Utils
+
+        private
+
+        def check_software_installed(name:, check_command:, optional: false)
+          puts "\nCheck install requirements: #{name}", :light_cyan
+
+          if system(check_command)
+            puts "Found: #{name}", :light_green
+          elsif optional
+            puts "Could not find (optional): #{name}", :light_yellow
+          else
+            puts "Could not find: #{name}", :light_red
+            puts "Please install: #{name}", :light_red
+            name
+          end
+        end
+
+        def clone_project_repo(name:, destination:, **)
+          destination_path = "code/#{destination}"
+
+          if Dir.exist? "#{destination_path}/#{name}"
+            puts "Skipping clone of '#{name}', repo already cloned", :light_yellow
+            return
+          end
+
+          FileUtils.mkdir_p(destination_path)
+
+          if system("git clone https://github.com/Crown-Commerical-Service/#{name}.git #{destination_path}/#{name}")
+            puts "Cloned #{name} into #{destination_path}", :light_green
+          else
+            puts "Something went wrong, could not clone: #{name}", :light_red
+            exit_script
+          end
+        end
+
+        public
+
+        def run_setup
+          run_script do
+            ##### CHECK REQUIRED SOFTWARE ######
+            puts '##### STAGE 1/2: START - CHECK REQUIRED SOFTWARE ######', :light_cyan
+
+            missing_software = crown_marketplace_config[:software].map do |software|
+              check_software_installed(**software)
+            end.compact
+
+            if missing_software.length.positive?
+              puts "\n##### STAGE 1/2 - ERROR - COULD NOT FIND ALL REQUIRED SOFTWARE #####", :light_red
+              exit_script
+            else
+              puts "\n##### STAGE 1/2: COMPLETE - FOUND ALL REQUIRED SOFTWARE #####", :light_cyan
+            end
+
+            ##### CLONE PROJECT REPOS ######
+            puts "\n##### STAGE 2/2: START - CLONE PROJECT REPOS ######", :light_cyan
+
+            crown_marketplace_config[:projects].each do |project|
+              clone_project_repo(**project)
+            end
+
+            puts "\n##### STAGE 2/2: COMPLETE - CLONED ALL PROJECT REPOS ######", :light_cyan
+          end
+        end
+      end
+    end
+  end
+end
+
+CrownMarketplaceRunner::Bin::Setup.run_setup

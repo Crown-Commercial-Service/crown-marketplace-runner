@@ -1,0 +1,28 @@
+---
+projects:
+  - name: crown-marketplace
+    destination: applications
+    default_branch: master
+  - name: crown-marketplace-legacy
+    destination: applications
+    default_branch: master
+  - name: crown-marketplace-feature-tests
+    destination: testing
+  - name: ccs-aws-codepipeline-action
+    destination: misc
+  - name: ccs-frontend_helpers
+    destination: misc
+software:
+  - name: PostgreSQL
+    check_command: which psql
+  - name: Redis
+    check_command: which redis-server
+  - name: NodeJS
+    check_command: which node
+  - name: Yarn
+    check_command: which yarn
+  - name: ClamAV
+    check_command: which clamd
+    optional: true
+  - name: NGINX
+    check_command: which nginx

@@ -1,0 +1,5 @@
+web: nginx -c "$(pwd)/config/nginx.conf"
+crown-marketplace_assets: env RUBY_DEBUG_OPEN=true code/applications/crown-marketplace/bin/shakapacker-dev-server
+crown-marketplace_app: env RUBY_DEBUG_OPEN=true PORT=3000 code/applications/crown-marketplace/bin/rails server
+crown-marketplace-legacy_assets: env RUBY_DEBUG_OPEN=true code/applications/crown-marketplace-legacy/bin/shakapacker-dev-server
+crown-marketplace-legacy_app: env RUBY_DEBUG_OPEN=true PORT=4000 code/applications/crown-marketplace-legacy/bin/rails server
