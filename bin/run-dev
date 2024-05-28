@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'optparse'
+
+with_sidekiq = true
+
+OptionParser.new do |opts|
+  opts.banner = 'Usage: bin/run-dev [options]'
+
+  opts.on('--no-sidekiq', 'Run without sidekiq') { with_sidekiq = false }
+end.parse!
+
+procfile_name = "Procfile.dev#{'.sidekiq' if with_sidekiq}"
+
+exec("foreman start -d . -f config/#{procfile_name}")

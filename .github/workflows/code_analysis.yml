@@ -1,0 +1,24 @@
+name: "Analyse code with Rubocop"
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1.177.1
+        with:
+          bundler-cache: true
+
+      - name: Run rubocop
+        run: bundle exec rubocop

@@ -1,0 +1,45 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../crown_marketplace_runner/utils'
+
+module CrownMarketplaceRunner
+  module Bin
+    class UpdateCode
+      class << self
+        include CrownMarketplaceRunner::Utils
+
+        private
+
+        def checkout_and_pull_code(name:, destination:, default_branch: 'main', **)
+          Dir.chdir("code/#{destination}/#{name}") do
+            return 'Uncommitted changes' unless system('git diff --quiet')
+            return 'Could not fetch code' unless system('git fetch origin')
+            return 'Could not checkout code' unless system("git checkout #{default_branch}")
+            return 'Could not update code' unless system('git pull')
+          end
+        end
+
+        public
+
+        def run_update_code
+          run_script do
+            crown_marketplace_config[:projects].each do |project|
+              puts "\n##### START - UPDATE CODE FOR #{project[:name]} #####", :light_cyan
+              check_repo_exists(name: project[:name], destination: project[:destination])
+              error = checkout_and_pull_code(**project)
+
+              if error
+                puts "##### ERROR - UPDATE CODE FOR #{project[:name]}: #{error} #####", :light_red
+              else
+                puts "##### FINISH - UPDATE CODE FOR #{project[:name]} #####", :light_cyan
+              end
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+CrownMarketplaceRunner::Bin::UpdateCode.run_update_code
