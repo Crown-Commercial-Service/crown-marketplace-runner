@@ -9,7 +9,7 @@ ruby '3.3.1'
 gem 'foreman', '~> 0.88.1', require: false
 
 # Make our output more pretty
-gem 'colorize', '~> 1.0.4', require: false
+gem 'colorize', '~> 1.1.0', require: false
 
 # Check code quality
 gem 'rubocop', '~> 1.63.5', require: false
