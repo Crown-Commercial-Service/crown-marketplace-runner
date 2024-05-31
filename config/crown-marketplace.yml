@@ -12,6 +12,8 @@ projects:
     destination: misc
   - name: ccs-frontend_helpers
     destination: misc
+  - name: ccs-frontend-project
+    destination: misc
 software:
   - name: PostgreSQL
     check_command: which psql

@@ -1,8 +1,3 @@
-web: nginx -c "$(pwd)/config/nginx.conf"
-crown-marketplace_assets: cd code/applications/crown-marketplace && env RUBY_DEBUG_OPEN=true bin/shakapacker-dev-server
-crown-marketplace_app: cd code/applications/crown-marketplace && env RUBY_DEBUG_OPEN=true PORT=3000 bin/rails server
-crown-marketplace-legacy_assets: cd code/applications/crown-marketplace-legacy && env RUBY_DEBUG_OPEN=true bin/shakapacker-dev-server
-crown-marketplace-legacy_app: cd code/applications/crown-marketplace-legacy && env RUBY_DEBUG_OPEN=true PORT=4000 bin/rails server
 redis: redis-server
 crown-marketplace_sidekiq: cd code/applications/crown-marketplace && bundle exec sidekiq
 crown-marketplace-legacy_sidekiq: cd code/applications/crown-marketplace-legacy && bundle exec sidekiq
