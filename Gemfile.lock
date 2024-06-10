@@ -7,7 +7,7 @@ GEM
     json (2.7.2)
     language_server-protocol (3.17.0.3)
     parallel (1.24.0)
-    parser (3.3.1.0)
+    parser (3.3.2.0)
       ast (~> 2.4.1)
       racc
     racc (1.8.0)
@@ -15,7 +15,7 @@ GEM
     regexp_parser (2.9.2)
     rexml (3.2.8)
       strscan (>= 3.0.9)
-    rubocop (1.63.5)
+    rubocop (1.64.1)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -39,7 +39,7 @@ PLATFORMS
 DEPENDENCIES
   colorize (~> 1.0.4)
   foreman (~> 0.88.1)
-  rubocop (~> 1.63.5)
+  rubocop (~> 1.64.1)
 
 RUBY VERSION
    ruby 3.3.1p55
