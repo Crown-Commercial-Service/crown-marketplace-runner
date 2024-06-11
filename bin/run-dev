@@ -11,6 +11,10 @@ OptionParser.new do |opts|
   opts.on('--no-sidekiq', 'Run without sidekiq') { with_sidekiq = false }
 end.parse!
 
-procfile_name = "Procfile.dev#{'.sidekiq' if with_sidekiq}"
+procfile_content = File.read('config/Procfile.dev')
 
-exec("foreman start -d . -f config/#{procfile_name}")
+procfile_content += File.read('config/Procfile.dev.sidekiq') if with_sidekiq
+
+File.write('config/Procfile', procfile_content)
+
+exec('foreman start -d . -f config/Procfile')

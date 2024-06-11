@@ -21,3 +21,6 @@ code/*
 
 # NGINX files
 tmp/*
+
+# Generated Procfile
+config/Procfile

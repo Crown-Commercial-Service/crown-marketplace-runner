@@ -1,6 +1,6 @@
 # Crown Marketplace Runner
 
-![Test Status](https://github.com/tim-s-ccs/crown-marketplace-runner/actions/workflows/code_analysis.yml/badge.svg)
+![Test Status](https://github.com/Crown-Commercial-Service/crown-marketplace-runner/actions/workflows/code_analysis.yml/badge.svg)
 
 This is a simple project to help set up the development environment for the Crown Marketplace projects.
 
@@ -147,7 +147,7 @@ brew install nginx
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/tim-s-ccs/crown-marketplace-runner.
+Bug reports and pull requests are welcome on GitHub at https://github.com/Crown-Commercial-Service/crown-marketplace-runner.
 
 To contribute to the project, you should checkout a new branch from `main` and make your changes.
 
