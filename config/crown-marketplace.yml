@@ -8,11 +8,11 @@ projects:
     default_branch: master
   - name: crown-marketplace-feature-tests
     destination: testing
-  - name: ccs-aws-codepipeline-action
-    destination: misc
   - name: ccs-frontend_helpers
-    destination: misc
+    destination: frontend
   - name: ccs-frontend-project
+    destination: frontend
+  - name: ccs-aws-codepipeline-action
     destination: misc
 software:
   - name: PostgreSQL

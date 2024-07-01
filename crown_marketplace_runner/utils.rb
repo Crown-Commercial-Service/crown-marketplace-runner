@@ -34,6 +34,19 @@ module CrownMarketplaceRunner
       puts "##### FINISH #{script_name} ######", :light_green
     end
 
+    def run_command_in_project(name:, command:, success_message:, error_message:)
+      puts "Running '#{command}' for: #{name}", :light_cyan
+
+      Dir.chdir("code/applications/#{name}") do
+        if Bundler.unbundled_system(command)
+          puts "#{success_message} for: #{name}", :light_green
+        else
+          puts "Something went wrong, could not #{error_message} for: #{name}", :light_red
+          exit_script
+        end
+      end
+    end
+
     def exit_script
       puts "\n##### EXITING #{script_name} ######", :light_red
       exit 1

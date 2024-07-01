@@ -1,0 +1,32 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'fileutils'
+
+require_relative '../crown_marketplace_runner/utils'
+
+module CrownMarketplaceRunner
+  module Bin
+    class ClearAssets
+      class << self
+        include CrownMarketplaceRunner::Utils
+
+        def run_clear_assets
+          run_script do
+            crown_marketplace_application_projects = crown_marketplace_config[:projects].select do |project|
+              project[:destination] == 'applications'
+            end
+
+            crown_marketplace_application_projects.each do |project|
+              puts "\n##### START - CLEAR ASSETS #{project[:name]} #####", :light_cyan
+              run_command_in_project(name: project[:name], command: 'bin/rails assets:clobber', success_message: 'Clearing precompiled assets', error_message: 'clear precompiled assets')
+              puts "\n##### FINISH - CLEAR ASSETS #{project[:name]} #####", :light_cyan
+            end
+          end
+        end
+      end
+    end
+  end
+end
+
+CrownMarketplaceRunner::Bin::ClearAssets.run_clear_assets
