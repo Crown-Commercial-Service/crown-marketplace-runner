@@ -17,4 +17,6 @@ procfile_content += File.read('config/Procfile.dev.sidekiq') if with_sidekiq
 
 File.write('config/Procfile', procfile_content)
 
+system('bin/clear-assets')
+
 exec('foreman start -d . -f config/Procfile')

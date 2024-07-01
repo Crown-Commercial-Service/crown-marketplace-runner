@@ -10,6 +10,7 @@ The Crown Marketplace projects consist of the following:
 - [Crown Marketplace - Feature tests][] - Cucumber test suite for automated testing of the web apps
 - [CCS GitHub Actions x AWS CodePipeline][] - GitHub action to trigger deployments of the web apps
 - [CCS Frontend Helpers][] - Ruby on Rails View helpers for GOV.UK Frontend components and CCS components
+- [CCS Frontend Project][] - HTML, CSS and JavaScript code for CCS components
 
 There are more details about these projects in their respective READMEs.
 
@@ -60,9 +61,11 @@ It will also download the following repositories into the `code` directory (if n
   - [Crown Marketplace Legacy][]
 - Testing:
   - [Crown Marketplace - Feature tests][]
+- Frontend:
+  - [CCS Frontend Helpers][]
+  - [CCS Frontend Project][]
 - Misc.:
   - [CCS GitHub Actions x AWS CodePipeline][]
-  - [CCS Frontend Helpers][]
 
 ### `bin/build-applications`
 
@@ -166,6 +169,7 @@ Once all these have passed, and the PR has been reviewed and approved by another
 [Crown Marketplace - Feature tests]: https://github.com/Crown-Commercial-Service/crown-marketplace-feature-tests
 [CCS GitHub Actions x AWS CodePipeline]: https://github.com/Crown-Commercial-Service/ccs-aws-codepipeline-action
 [CCS Frontend Helpers]: https://github.com/Crown-Commercial-Service/ccs-frontend_helpers
+[CCS Frontend Project]:  https://github.com/Crown-Commercial-Service/ccs-frontend-project
 [homebrew]: https://brew.sh/
 [PostgreSQL]: https://www.postgresql.org/
 [PostGIS]: https://postgis.net/

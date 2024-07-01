@@ -9,23 +9,6 @@ module CrownMarketplaceRunner
       class << self
         include CrownMarketplaceRunner::Utils
 
-        private
-
-        def run_build_command(name:, command:, success_message:, error_message:)
-          puts "Running '#{command}' for: #{name}", :light_cyan
-
-          Dir.chdir("code/applications/#{name}") do
-            if Bundler.unbundled_system(command)
-              puts "#{success_message} for: #{name}", :light_green
-            else
-              puts "Something went wrong, could not #{error_message} for: #{name}", :light_red
-              exit_script
-            end
-          end
-        end
-
-        public
-
         def run_build_applications
           run_script do
             crown_marketplace_application_projects = crown_marketplace_config[:projects].select do |project|
@@ -35,9 +18,8 @@ module CrownMarketplaceRunner
             crown_marketplace_application_projects.each do |project|
               puts "\n##### START - BUILD #{project[:name]} #####", :light_cyan
               check_repo_exists(name: project[:name], destination: project[:destination])
-              run_build_command(name: project[:name], command: 'bundle install', success_message: 'Installed gems', error_message: 'install gems')
-              run_build_command(name: project[:name], command: 'bin/rails assets:precompile', success_message: 'Precompiled assets', error_message: 'precompile assets')
-              run_build_command(name: project[:name], command: 'bin/rails db:prepare', success_message: 'Creating or migrating existing database', error_message: 'create or migrate existing database')
+              run_command_in_project(name: project[:name], command: 'bundle install', success_message: 'Installed gems', error_message: 'install gems')
+              run_command_in_project(name: project[:name], command: 'bin/rails db:prepare', success_message: 'Creating or migrating existing database', error_message: 'create or migrate existing database')
               puts "\n##### FINISH - BUILD #{project[:name]} #####", :light_cyan
             end
           end
