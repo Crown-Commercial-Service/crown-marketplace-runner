@@ -3,7 +3,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.3.1'
+ruby '3.3.3'
 
 # Allows us to run the rails applications
 gem 'foreman', '~> 0.88.1', require: false
