@@ -2,10 +2,8 @@
 projects:
   - name: crown-marketplace
     destination: applications
-    default_branch: master
   - name: crown-marketplace-legacy
     destination: applications
-    default_branch: master
   - name: crown-marketplace-feature-tests
     destination: testing
   - name: ccs-frontend_helpers
