@@ -37,7 +37,7 @@ module CrownMarketplaceRunner
 
           FileUtils.mkdir_p(destination_path)
 
-          if system("git clone https://github.com/Crown-Commerical-Service/#{name}.git #{destination_path}/#{name}")
+          if system("git clone https://github.com/Crown-Commercial-Service/#{name}.git #{destination_path}/#{name}")
             puts "Cloned #{name} into #{destination_path}", :light_green
           else
             puts "Something went wrong, could not clone: #{name}", :light_red

@@ -9,6 +9,8 @@ The Crown Marketplace projects consist of the following:
 - [Crown Marketplace Legacy][] - Ruby on Rails application for the Legal Services, Management Consultancy and Supply Teachers frameworks
 - [Crown Marketplace - Feature tests][] - Cucumber test suite for automated testing of the web apps
 - [CCS GitHub Actions x AWS CodePipeline][] - GitHub action to trigger deployments of the web apps
+- [Crown Marketplace Maintenance][] - Single page app for use when Crown Marketplace is in maintinance mode
+- [CCS OmniAuth::OpenIDConnect][] - CCS version of `OmniAuth::OpenIDConnect`
 - [CCS Frontend Helpers][] - Ruby on Rails View helpers for GOV.UK Frontend components and CCS components
 - [CCS Frontend Project][] - HTML, CSS and JavaScript code for CCS components
 
@@ -66,6 +68,8 @@ It will also download the following repositories into the `code` directory (if n
   - [CCS Frontend Project][]
 - Misc.:
   - [CCS GitHub Actions x AWS CodePipeline][]
+  - [Crown Marketplace Maintenance][]
+  - [CCS OmniAuth::OpenIDConnect][]
 
 ### `bin/build-applications`
 
@@ -168,6 +172,8 @@ Once all these have passed, and the PR has been reviewed and approved by another
 [Crown Marketplace Legacy]: https://github.com/Crown-Commercial-Service/crown-marketplace-legacy
 [Crown Marketplace - Feature tests]: https://github.com/Crown-Commercial-Service/crown-marketplace-feature-tests
 [CCS GitHub Actions x AWS CodePipeline]: https://github.com/Crown-Commercial-Service/ccs-aws-codepipeline-action
+[Crown Marketplace Maintenance]: https://github.com/Crown-Commercial-Service/crown-marketplace-maintenance
+[CCS OmniAuth::OpenIDConnect]: https://github.com/Crown-Commercial-Service/ccs_omniauth_openid_connect
 [CCS Frontend Helpers]: https://github.com/Crown-Commercial-Service/ccs-frontend_helpers
 [CCS Frontend Project]:  https://github.com/Crown-Commercial-Service/ccs-frontend-project
 [homebrew]: https://brew.sh/

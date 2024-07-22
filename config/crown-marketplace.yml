@@ -12,6 +12,12 @@ projects:
     destination: frontend
   - name: ccs-aws-codepipeline-action
     destination: misc
+  - name: crown-marketplace-maintenance
+    destination: misc
+    default_branch: master
+  - name: ccs_omniauth_openid_connect
+    destination: misc
+    default_branch: master
 software:
   - name: PostgreSQL
     check_command: which psql
