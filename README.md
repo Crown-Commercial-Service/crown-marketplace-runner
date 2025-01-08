@@ -90,7 +90,7 @@ If you have any problems installing these you should consult the documentation o
 
 ### Ruby
 
-The web application projects currently run on [Ruby][] v3.3.6.
+The web application projects currently run on [Ruby][] v3.4.1.
 
 Ensure that a ruby version manager (e.g. rvm or rbenv) is installed and set up properly before continuing.
 
