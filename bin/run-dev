@@ -4,10 +4,12 @@
 require 'optparse'
 
 with_sidekiq = true
+with_build = false
 
 OptionParser.new do |opts|
   opts.banner = 'Usage: bin/run-dev [options]'
 
+  opts.on('--build', 'Build apps before starting') { with_build = true }
   opts.on('--no-sidekiq', 'Run without sidekiq') { with_sidekiq = false }
 end.parse!
 
@@ -16,6 +18,8 @@ procfile_content = File.read('config/Procfile.dev')
 procfile_content += File.read('config/Procfile.dev.sidekiq') if with_sidekiq
 
 File.write('config/Procfile', procfile_content)
+
+system('bin/build-applications') if with_build
 
 system('bin/clear-assets')
 
