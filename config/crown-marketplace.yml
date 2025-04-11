@@ -25,8 +25,8 @@ software:
     check_command: which redis-server
   - name: NodeJS
     check_command: which node
-  - name: Yarn
-    check_command: which yarn
+  - name: Bun
+    check_command: which bun
   - name: ClamAV
     check_command: which clamd
     optional: true
