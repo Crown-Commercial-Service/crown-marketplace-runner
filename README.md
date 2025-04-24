@@ -51,7 +51,7 @@ Running `bin/setup` checks you have the following software installed:
 - **PostgreSQL** (database)
 - **Redis** (cache for Sidekiq)
 - **NodeJS** (for JavaScript assets)
-- **Yarn** (for application assets)
+- **Bun** (for application assets)
 - **ClamAV** (optional) (Virus check documents)
 - **NGINX** (local web server)
 
@@ -126,12 +126,12 @@ You can then install an up to date version of node (these projects use v20).
 nvm install 20 
 ```
 
-### Yarn
+### Bun
 
-[Yarn][] is used to manage the NodeJS modules.
+[Bun][] is used to manage the NodeJS modules.
 
 ```shell
-brew install yarn
+brew install bun
 ```
 
 ### ClamAV
@@ -183,7 +183,7 @@ Once all these have passed, and the PR has been reviewed and approved by another
 [Sidekiq]: https://sidekiq.org/
 [NodeJS]: https://nodejs.org/en
 [Node Version Manager]: https://github.com/nvm-sh/nvm
-[Yarn]: https://yarnpkg.com/
+[Bun]: https://bun.sh/
 [NGINX]: https://nginx.org/en/
 [ClamAV]: https://www.clamav.net/
 [Ruby on Rails]: https://rubyonrails.org/
