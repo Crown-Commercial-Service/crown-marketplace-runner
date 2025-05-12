@@ -1,7 +1,7 @@
 web: nginx -c "$(pwd)/config/nginx.conf"
 crown-marketplace_app: cd code/applications/crown-marketplace && env RUBY_DEBUG_OPEN=true PORT=3010 bin/rails server
-crown-marketplace_css: cd code/applications/crown-marketplace && yarn build:css --watch
-crown-marketplace_js: cd code/applications/crown-marketplace && yarn build --watch
+crown-marketplace_css: cd code/applications/crown-marketplace && bun build:css --watch
+crown-marketplace_js: cd code/applications/crown-marketplace && bun run build --watch
 crown-marketplace-legacy_app: cd code/applications/crown-marketplace-legacy && env RUBY_DEBUG_OPEN=true PORT=3020 bin/rails server
-crown-marketplace-legacy_css: cd code/applications/crown-marketplace-legacy && yarn build:css --watch
-crown-marketplace-legacy_js: cd code/applications/crown-marketplace-legacy && yarn build --watch
+crown-marketplace-legacy_css: cd code/applications/crown-marketplace-legacy && bun build:css --watch
+crown-marketplace-legacy_js: cd code/applications/crown-marketplace-legacy && bun run build --watch
