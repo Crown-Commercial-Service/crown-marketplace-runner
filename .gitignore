@@ -15,6 +15,7 @@
 
 # Redis dump
 dump.rdb
+*.rdb
 
 # Local code repos
 code/*
