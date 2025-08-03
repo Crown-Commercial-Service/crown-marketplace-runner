@@ -9,4 +9,4 @@ ruby '3.4.3'
 gem 'colorize', '~> 1.0.4', require: false
 
 # Check code quality
-gem 'rubocop', '~> 1.79.0', require: false
+gem 'rubocop', '~> 1.79.1', require: false
