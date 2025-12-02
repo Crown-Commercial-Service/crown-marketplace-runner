@@ -123,7 +123,7 @@ brew install nvm
 You can then install an up to date version of node (these projects use v20).
 
 ```shell
-nvm install 20 
+nvm install lts/krypton 
 ```
 
 ### Bun
@@ -131,7 +131,7 @@ nvm install 20
 [Bun][] is used to manage the NodeJS modules.
 
 ```shell
-brew install bun
+brew install oven-sh/bun/bun
 ```
 
 ### ClamAV
