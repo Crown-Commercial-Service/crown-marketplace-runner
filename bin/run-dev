@@ -29,4 +29,11 @@ if system('gem list foreman -I --silent')
   puts '##### FINISH - Installing foreman #####'
 end
 
+puts 'Ensure apps are not running'
+[3010, 3020].each do |pid|
+  stuck_pid = `lsof -t -i:#{pid}`.strip
+
+  system("kill -9 #{stuck_pid}") unless stuck_pid.empty?
+end
+
 exec('foreman start -d . -f config/Procfile')
