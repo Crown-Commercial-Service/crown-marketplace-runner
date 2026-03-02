@@ -11,8 +11,8 @@ module CrownMarketplaceRunner
     CONFIG_FILE_PATH = 'config/crown-marketplace.yml'
 
     def crown_marketplace_config
-      @@crown_marketplace_config ||= YAML.load_file(CONFIG_FILE_PATH).transform_keys(&:to_sym).to_h do |item|
-        [item[0], item[1].map { |value| value.transform_keys(&:to_sym) }]
+      @@crown_marketplace_config ||= YAML.load_file(CONFIG_FILE_PATH).transform_keys(&:to_sym).to_h do |key, items|
+        [key, items.map { |value| value.transform_keys(&:to_sym) }]
       end
     end
 
