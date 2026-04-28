@@ -1,0 +1,68 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../crown_marketplace_runner/utils'
+
+module CrownMarketplaceRunner
+  module Bin
+    class BuildTestApplications
+      class << self
+        include CrownMarketplaceRunner::Utils
+
+        APPLICATION_PROJECT_TYPE = 'applications'
+        TESTING_PROJECT_TYPE = 'testing'
+
+        def run_build_test_applications
+          run_script do
+            crown_marketplace_config[:projects].each do |project|
+              next unless [APPLICATION_PROJECT_TYPE, TESTING_PROJECT_TYPE].include?(project[:destination])
+
+              case project[:name]
+              when 'crown-marketplace'
+                setup_crown_marketplace(project)
+              when 'crown-marketplace-legacy'
+                setup_crown_marketplace_legacy(project)
+              when 'crown-marketplace-feature-tests'
+                setup_crown_marketplace_feature_test(project)
+              end
+            end
+          end
+        end
+
+        private
+
+        def setup_project(project, &)
+          puts "\n##### START - BUILD #{project[:name]} #####", :light_cyan
+          check_repo_exists(name: project[:name], destination: project[:destination])
+          run_command_in_project(project_dir: project[:destination], name: project[:name], command: 'bundle install', success_message: 'Installed gems', error_message: 'install gems')
+
+          yield if block_given?
+
+          puts "\n##### FINISH - BUILD #{project[:name]} #####", :light_cyan
+        end
+
+        def setup_crown_marketplace(project)
+          setup_project(project) do
+            run_command_in_project(name: project[:name], command: 'bun install', success_message: 'Installing NodeJS modules', error_message: 'install NodeJS modules')
+            run_command_in_project(name: project[:name], command: "bin/rails db:test:prepare", success_message: 'Creating test database', error_message: 'create test database')
+            run_command_in_project(name: project[:name], command: "bin/rails db:static db:import_test_data db:make_framework_live[RM6232]", success_message: 'Setting test data', error_message: 'setting test data')
+          end
+        end
+
+        def setup_crown_marketplace_legacy(project)
+          setup_project(project) do
+            run_command_in_project(name: project[:name], command: 'bun install', success_message: 'Installing NodeJS modules', error_message: 'install NodeJS modules')
+            run_command_in_project(name: project[:name], command: "bin/rails db:test:prepare", success_message: 'Creating test database', error_message: 'create test database')
+            run_command_in_project(name: project[:name], command: "bin/rails db:import_test_data db:make_framework_live[RM6238]", success_message: 'Setting test data', error_message: 'setting test data')
+          end
+        end
+
+        def setup_crown_marketplace_feature_test(project)
+          setup_project(project)
+        end
+      end
+    end
+  end
+end
+
+CrownMarketplaceRunner::Bin::BuildTestApplications.run_build_test_applications

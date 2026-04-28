@@ -1,0 +1,11 @@
+---
+users:
+  admin:
+    - email: test_admin@example.com
+      password: Password12345!
+  buyer:
+    - email: test@example.com
+      password: Password12345!
+  no_details:
+    - email: test_no_buyer_details@example.com
+      password: Password12345!

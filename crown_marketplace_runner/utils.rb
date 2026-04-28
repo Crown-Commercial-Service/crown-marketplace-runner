@@ -34,10 +34,10 @@ module CrownMarketplaceRunner
       puts "##### FINISH #{script_name} ######", :light_green
     end
 
-    def run_command_in_project(name:, command:, success_message:, error_message:)
+    def run_command_in_project(name:, command:, success_message:, error_message:, project_dir: 'applications')
       puts "Running '#{command}' for: #{name}", :light_cyan
 
-      Dir.chdir("code/applications/#{name}") do
+      Dir.chdir("code/#{project_dir}/#{name}") do
         if Bundler.unbundled_system(command)
           puts "#{success_message} for: #{name}", :light_green
         else

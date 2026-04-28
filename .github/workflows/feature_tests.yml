@@ -1,0 +1,154 @@
+name: Crown Marketplace End to End Testing
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+
+
+# on:
+#   workflow_dispatch:
+#     inputs:
+#       crown_marketplace_branch:
+#         description: 'Branch of crown-marketplace to test'
+#         required: false
+#         default: 'main'
+#       crown_marketplace_legacy_branch:
+#         description: 'Branch of crown-marketplace-legacy to test'
+#         required: false
+#         default: 'main'
+#       crown_marketplace_feature_tests_branch:
+#         description: 'Branch of crown-marketplace-feature-tests to use'
+#         required: false
+#         default: 'main'
+#       cucumber_test_args:
+#         description: 'Arguments to pass to the cucumber test runner'
+#         required: false
+#         default: 'features'
+
+jobs:
+  run-feature-tests:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgis/postgis:15-3.5-alpine
+        ports:
+          - "5432:5432"
+        env:
+          POSTGRES_USER: rails
+          POSTGRES_PASSWORD: password
+          LC_COLLATE: C
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      cognito:
+        image: jagregory/cognito-local:latest
+        ports:
+          - 9229:9229
+
+    env:
+      RAILS_ENV: test
+      TEST_COGNITO_ENDPOINT: http://localhost:9229
+      COGNITO_AWS_REGION: us-east-1
+      AWS_ACCESS_KEY: mock-key
+      AWS_SECRET_KEY: mock-secret
+      PGHOST: 127.0.0.1
+      PGPORT: 5432
+      PGUSER: rails
+      PGPASSWORD: password
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Gecko driver
+        uses: browser-actions/setup-geckodriver@latest
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install Ruby and gems
+        uses: ruby/setup-ruby@v1.305.0
+        with:
+          bundler-cache: true
+
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.2.18
+
+      - name: Install System Dependencies (Redis & NGINX)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y redis-server redis-tools nginx
+
+          # Free up the nginx and redis ports
+          sudo systemctl stop nginx
+          sudo systemctl stop redis-server
+
+          # Fix permissions issues
+          sudo chown -R $USER:$USER /var/log/nginx
+          sudo chown -R $USER:$USER /var/lib/nginx
+          sudo touch /run/nginx.pid
+          sudo chown $USER:$USER /run/nginx.pid
+          sudo setcap 'cap_net_bind_service=+ep' /usr/sbin/nginx
+
+      - name: Checkout Crown Marketplace
+        uses: actions/checkout@v6
+        with:
+          repository: Crown-Commercial-Service/crown-marketplace
+          path: code/applications/crown-marketplace
+          ref: ${{ github.event.inputs.crown_marketplace_branch || 'main' }}
+
+      - name: Checkout Crown Marketplace Legacy
+        uses: actions/checkout@v6
+        with:
+          repository: Crown-Commercial-Service/crown-marketplace-legacy
+          path: code/applications/crown-marketplace-legacy
+          ref: ${{ github.event.inputs.crown_marketplace_legacy_branch || 'main' }}
+
+      - name: Checkout Crown Marketplace Feature Tests
+        uses: actions/checkout@v6
+        with:
+          repository: Crown-Commercial-Service/crown-marketplace-feature-tests
+          path: code/testing/crown-marketplace-feature-tests
+          ref: ${{ github.event.inputs.crown_marketplace_feature_tests_branch || 'main' }}
+
+      - name: Setup cognito
+        run: bundle exec ruby ./bin/setup-cognito-test-environment
+
+      - name: Build the applications
+        run: bin/build-test-applications
+
+      - name: Run the applications in the background
+        run: bin/run-dev &
+
+      - name: Wait for Apps to be Ready
+        timeout-minutes: 2
+        run: |
+          echo "Waiting for Crown Marketplace to be healthy..."
+          # Keep curling the endpoint until the HTTP status code equals "200"
+          while [ "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3010/healthcheck)" != "200" ]; do
+            sleep 2
+          done
+          echo "Crown Marketplace is fully booted and healthy!"
+
+          echo "Waiting for Crown Marketplace Legacy to be healthy..."
+          while [ "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:3020/healthcheck)" != "200" ]; do
+            sleep 2
+          done
+          echo "Crown Marketplace Legacy is fully booted and healthy!"
+
+      - name: Copy test config
+        run: |
+          cp config/environment.test.yml code/testing/crown-marketplace-feature-tests/config/environment.local.yml
+
+      - name: Run Crown Marketplace Features
+        working-directory: ./code/testing/crown-marketplace-feature-tests
+        run: |
+          bin/run-cucumber local ${{ github.event.inputs.cucumber_test_args || 'features/services/management_consultancy/rm6309/home' }} 

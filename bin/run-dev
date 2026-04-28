@@ -14,7 +14,6 @@ OptionParser.new do |opts|
 end.parse!
 
 procfile_content = File.read('config/Procfile.dev')
-
 procfile_content += File.read('config/Procfile.dev.sidekiq') if with_sidekiq
 
 File.write('config/Procfile', procfile_content)
