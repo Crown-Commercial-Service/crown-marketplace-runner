@@ -1,0 +1,142 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'aws-sdk-cognitoidentityprovider'
+
+require_relative '../crown_marketplace_runner/utils'
+
+module CrownMarketplaceRunner
+  module Bin
+    class SetupCognitoTestEnvironment
+      class << self
+        include CrownMarketplaceRunner::Utils
+
+        COGNITO_ENDPOINT = ENV.fetch('TEST_COGNITO_ENDPOINT', 'http://localhost:9229')
+        COGNITO_AWS_REGION = ENV.fetch('COGNITO_AWS_REGION', 'us-east-1')
+        AWS_ACCESS_KEY = ENV.fetch('AWS_ACCESS_KEY', 'mock-key')
+        AWS_SECRET_KEY = ENV.fetch('AWS_SECRET_KEY', 'mock-secret')
+
+        def run_setup_cognito_test_environment
+          run_script do
+            puts "\n##### START - CREATE TEST COGNITO SERVER #####", :light_cyan
+            client = create_aws_client
+            pool_id = create_user_pool(client)
+            client_id = create_user_pool_client(client, pool_id)
+
+            puts "Created Pool ID: #{pool_id}"
+            puts "Created Client ID: #{client_id}"
+
+            create_groups(client, pool_id)
+
+            [
+              ['test_admin@example.com', %w[allow_list_access buyer ccs_developer ccs_employee ccs_user_admin fm_access ls_access mc_access st_access]],
+              ['test@example.com', %w[buyer fm_access ls_access mc_access st_access]],
+              ['test_no_buyer_details@example.com', %w[buyer fm_access ls_access mc_access st_access]]
+            ].each do |email, group_names|
+              create_test_user(client, pool_id, email, group_names)
+            end
+
+            export_env_varibales_to_git(pool_id, client_id)
+
+            puts "\n##### END - CREATE TEST COGNITO SERVER #####", :light_cyan
+          end
+        end
+
+        private
+
+        def create_aws_client
+          puts 'Creating the AWS Client'
+          Aws::CognitoIdentityProvider::Client.new(
+            endpoint: COGNITO_ENDPOINT,
+            region: COGNITO_AWS_REGION,
+            access_key_id: AWS_ACCESS_KEY,
+            secret_access_key: AWS_SECRET_KEY
+          )
+        end
+
+        def create_user_pool(client)
+          puts 'Creating User Pool'
+          pool_resp = client.create_user_pool(pool_name: 'crown-marketplace-pool')
+          pool_resp.user_pool.id
+        end
+
+        def create_user_pool_client(client, pool_id)
+          puts 'Creating User Pool Client'
+          client_resp = client.create_user_pool_client(
+            user_pool_id: pool_id,
+            client_name: 'crown-marketplace-client'
+          )
+          client_resp.user_pool_client.client_id
+        end
+
+        def create_groups(client, pool_id)
+          puts 'Creating Groups'
+
+          groups = %w[
+            allow_list_access
+            buyer
+            ccs_developer
+            ccs_employee
+            ccs_user_admin
+            fm_access
+            ls_access
+            mc_access
+            st_access
+          ]
+
+          groups.each do |group|
+            client.create_group(
+              user_pool_id: pool_id,
+              group_name: group
+            )
+            puts " - Created group: #{group}"
+          end
+        end
+
+        def create_test_user(client, pool_id, email, group_names)
+          puts "Creating user #{email} in groups #{group_names.join(', ')}"
+
+          # Create the user
+          client.admin_create_user(
+            user_pool_id: pool_id,
+            username: email,
+            user_attributes: [
+              { name: 'email', value: email },
+              { name: 'email_verified', value: 'true' }
+            ],
+            message_action: 'SUPPRESS'
+          )
+
+          # Set the user password
+          client.admin_set_user_password(
+            user_pool_id: pool_id,
+            username: email,
+            password: 'Password12345!',
+            permanent: true
+          )
+
+          # Add to the appropriate group
+          group_names.each do |group_name|
+            client.admin_add_user_to_group(
+              user_pool_id: pool_id,
+              username: email,
+              group_name: group_name
+            )
+          end
+        end
+
+        def export_env_varibales_to_git(pool_id, client_id)
+          return unless ENV['GITHUB_ENV']
+
+          puts 'Exporting variables to GitHub Actions environment'
+          File.open(ENV.fetch('GITHUB_ENV'), 'a') do |f|
+            f.puts "COGNITO_USER_POOL_ID=#{pool_id}"
+            f.puts "COGNITO_AWS_REGION=#{client_id}"
+          end
+        end
+      end
+    end
+  end
+end
+
+CrownMarketplaceRunner::Bin::SetupCognitoTestEnvironment.run_setup_cognito_test_environment
