@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require_relative '../crown_marketplace_runner/utils'
+
+module CrownMarketplaceRunner
+  module Bin
+    class SeedDatabase
+      class << self
+        include CrownMarketplaceRunner::Utils
+
+        # rubocop:disable Metrics/AbcSize
+        def run_build_applications
+          run_script do
+            crown_marketplace_application_projects = crown_marketplace_config[:projects].select do |project|
+              project[:destination] == 'applications'
+            end
+
+            crown_marketplace_application_projects.each do |project|
+              puts "\n##### START - DATA SEED #{project[:name]} #####", :light_cyan
+              check_repo_exists(name: project[:name], destination: project[:destination])
+              run_command_in_project(name: project[:name], command: 'bundle install', success_message: 'Installed gems', error_message: 'install gems')
+              run_command_in_project(name: project[:name], command: 'bin/rails db:static', success_message: 'Added static data', error_message: 'adding static data')
+              run_command_in_project(name: project[:name], command: 'bin/rails db:sample_address_import', success_message: 'Imported address data', error_message: 'import address data') if project[:name] == 'crown-marketplace'
+              run_command_in_project(name: project[:name], command: 'bin/rails db:import_test_data_to_development', success_message: 'Imported test data', error_message: 'import test data')
+              puts "\n##### FINISH - DATA SEED #{project[:name]} #####", :light_cyan
+            end
+          end
+        end
+        # rubocop:enable Metrics/AbcSize
+      end
+    end
+  end
+end
+
+CrownMarketplaceRunner::Bin::SeedDatabase.run_build_applications
