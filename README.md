@@ -22,6 +22,7 @@ There are more details about these projects in their respective READMEs.
 - Run `bin/setup` check you have the required software installed and to download the project repositories.
   If you are missing any software make sure it is installed before continuing.
 - Run `bin/build-applications` to build the web applications
+- Run `bin/seed-database` to add static and test supplier data to the database
 - Add `.env.local` file to the projects to pass the local environment variables
 - Run `bin/run-dev` to bring up the web applications and their background services.
   You can then access them on http://localhost.
@@ -81,6 +82,11 @@ Running `bin/build-applications` will do the following to both applications:
 ### `bin/update-code`
 
 Running `bin/update-code` will fetch the latest version of the code (on the default branch) for all the projects
+
+### `bin/seed-database`
+
+Running `bin/seed-database` will add the framework data and test suppliers data to the database for both applications
+
 
 ## Software requirements
 
